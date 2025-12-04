@@ -1,5 +1,72 @@
-<p>点击进入游戏：</p>
-<a href="warriorsmath.html">数学小勇士闯关记</a><br>
-<a href="Math20.html">20以内加减法大冒险</a>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学游戏入口</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #fff5e6; /* 暖色调背景，匹配原图风格 */
+            font-family: "微软雅黑", sans-serif;
+        }
+        .game-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: 3px solid #ff9a6c; /* 橙色边框呼应原图 */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .game-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #ff5e6c; /* 活泼的红色标题 */
+            text-shadow: 2px 2px #ffe066; /* 黄色阴影增加童趣 */
+            margin-bottom: 1.5rem;
+        }
+        .game-tip {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        .game-btn {
+            display: block;
+            width: 85%;
+            margin: 1.2rem auto;
+            padding: 1.2rem;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            border-radius: 10px;
+            color: #ffffff;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .game-btn--warrior {
+            background-color: #4caaf5; /* 蓝色按钮区分游戏 */
+        }
+        .game-btn--20math {
+            background-color: #5cdb95; /* 绿色按钮匹配原图的"20以内"风格 */
+        }
+        .game-btn:hover {
+            transform: scale(1.05); /*  hover放大增加交互感 */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">🎮 数学游戏大集合</h1>
+        <p class="game-tip">选择你想挑战的数学游戏吧！</p>
+        <a href="warriorsmath.html" class="game-btn game-btn--warrior">数学小勇士闯关记</a>
+        <a href="Math20.html" class="game-btn game-btn--20math">20以内加减法大冒险</a>
+    </div>
+</body>
+</html>
+
 
 
