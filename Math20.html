@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20以内加减法大冒险</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', '楷体', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #ffccd5, #a7c5eb);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .game-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            position: relative;
+            border: 8px solid #ff9e6d;
+        }
+        
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            font-size: 2.5rem;
+            text-shadow: 3px 3px 0 #ffe66d;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            background: linear-gradient(to right, #ffd166, #ff9e6d);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .info-label {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff0055;
+            background-color: white;
+            padding: 5px 15px;
+            border-radius: 10px;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .life-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .life {
+            width: 30px;
+            height: 30px;
+            background-color: #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .life.lost {
+            background-color: #ccc;
+        }
+        
+        .level-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .level-btn {
+            padding: 12px 20px;
+            background-color: #4ecdc4;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 0 #1a936f;
+        }
+        
+        .level-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 0 #1a936f;
+        }
+        
+        .level-btn.active {
+            background-color: #ff6b6b;
+            box-shadow: 0 4px 0 #c44569;
+        }
+        
+        .level-btn:disabled {
+            background-color: #ccc;
+            box-shadow: 0 4px 0 #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .game-controls-top {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        
+        .game-area {
+            background-color: #f7f9fc;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .question-container {
+            margin-bottom: 30px;
+        }
+        
+        .question {
+            font-size: 3.5rem;
+            margin: 20px 0;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .number-box {
+            display: inline-block;
+            width: 85px;
+            height: 85px;
+            line-height: 85px;
+            background-color: white;
+            border-radius: 15px;
+            margin: 0 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 3px dashed #4ecdc4;
+        }
+        
+        .operator {
+            font-size: 3rem;
+            margin: 0 10px;
+            color: #ff6b6b;
+        }
+        
+        .equal {
+            font-size: 3rem;
+            margin: 0 10px;
+            color: #ff9e6d;
+        }
+        
+        .answer-display {
+            display: inline-block;
+            font-size: 3.5rem;
+            width: 130px;
+            height: 85px;
+            line-height: 85px;
+            text-align: center;
+            border: 4px solid #4ecdc4;
+            border-radius: 15px;
+            margin: 0 10px;
+            background-color: #fff9c4;
+            color: #333;
+        }
+        
+        .answer-display.empty {
+            color: #aaa;
+        }
+        
+        .keyboard-container {
+            margin: 25px 0;
+        }
+        
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .keyboard-btn {
+            width: 75px;
+            height: 75px;
+            margin: 0 8px;
+            font-size: 2.2rem;
+            font-weight: bold;
+            background-color: #ff9e6d;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 5px 0 #ff7c43;
+        }
+        
+        .keyboard-btn:hover {
+            background-color: #ff7c43;
+            transform: translateY(-3px);
+        }
+        
+        .keyboard-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #ff7c43;
+        }
+        
+        .keyboard-btn.clear {
+            background-color: #ff6b6b;
+            box-shadow: 0 5px 0 #c44569;
+            font-size: 1.8rem;
+        }
+        
+        .keyboard-btn.clear:hover {
+            background-color: #c44569;
+        }
+        
+        .keyboard-btn.submit {
+            background-color: #4ecdc4;
+            box-shadow: 0 5px 0 #1a936f;
+            width: 160px;
+            font-size: 2rem;
+        }
+        
+        .keyboard-btn.submit:hover {
+            background-color: #1a936f;
+        }
+        
+        .keyboard-btn:disabled {
+            background-color: #ccc;
+            box-shadow: 0 5px 0 #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result-feedback {
+            display: inline-block;
+            font-size: 3.5rem;
+            margin-left: 20px;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .result-correct {
+            color: #4ecdc4;
+            opacity: 1;
+        }
+        
+        .result-incorrect {
+            color: #ff6b6b;
+            opacity: 1;
+        }
+        
+        .timer-container {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .challenge-timer {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 3px solid #ff6b6b;
+        }
+        
+        .question-timer-container {
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .timer-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .timer-progress {
+            height: 100%;
+            background: linear-gradient(to right, #4ecdc4, #ff9e6d);
+            width: 100%;
+            transition: width 1s linear;
+        }
+        
+        .timer-text {
+            margin-top: 5px;
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .feedback {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 15px;
+            min-height: 40px;
+            transition: all 0.3s;
+        }
+        
+        .correct {
+            color: #4ecdc4;
+        }
+        
+        .incorrect {
+            color: #ff6b6b;
+        }
+        
+        .timeout {
+            color: #ff9e6d;
+        }
+        
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .control-btn {
+            padding: 15px 35px;
+            font-size: 1.4rem;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .start-btn {
+            background-color: #4ecdc4;
+            color: white;
+            box-shadow: 0 6px 0 #1a936f;
+        }
+        
+        .start-btn:hover {
+            background-color: #1a936f;
+            transform: translateY(-3px);
+        }
+        
+        .start-btn:disabled {
+            background-color: #ccc;
+            box-shadow: 0 6px 0 #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .restart-btn {
+            background-color: #ff6b6b;
+            color: white;
+            box-shadow: 0 6px 0 #c44569;
+        }
+        
+        .restart-btn:hover {
+            background-color: #c44569;
+            transform: translateY(-3px);
+        }
+        
+        .game-footer {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 3px dashed #ff9e6d;
+            text-align: left;
+        }
+        
+        .instructions {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #4ecdc4;
+        }
+        
+        .instructions h3 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .instructions p {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .creator-info {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+        
+        .creator-info a {
+            color: #4ecdc4;
+            text-decoration: none;
+        }
+        
+        .creator-info a:hover {
+            text-decoration: underline;
+        }
+        
+        .celebration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            display: none;
+        }
+        
+        .celebration h2 {
+            font-size: 4rem;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 0 #ffe66d;
+        }
+        
+        .celebration p {
+            font-size: 1.8rem;
+            color: #4ecdc4;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #ff6b6b;
+            border-radius: 50%;
+        }
+        
+        .game-over {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .game-over h2 {
+            color: #ff6b6b;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .final-score {
+            font-size: 3rem;
+            color: #4ecdc4;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .wrong-questions {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        
+        .wrong-questions h3 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .wrong-question-item {
+            padding: 8px;
+            border-bottom: 1px dashed #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .wrong-answer {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .correct-answer {
+            color: #4ecdc4;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 15px;
+                max-width: 95%;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question {
+                font-size: 2.5rem;
+                flex-wrap: wrap;
+            }
+            
+            .number-box, .answer-display {
+                width: 65px;
+                height: 65px;
+                line-height: 65px;
+                font-size: 2.5rem;
+            }
+            
+            .answer-display {
+                width: 100px;
+            }
+            
+            .game-info {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .keyboard-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+                margin: 0 5px;
+            }
+            
+            .keyboard-btn.clear {
+                font-size: 1.5rem;
+            }
+            
+            .keyboard-btn.submit {
+                width: 130px;
+                font-size: 1.7rem;
+            }
+            
+            .result-feedback {
+                font-size: 2.8rem;
+                width: 50px;
+                height: 50px;
+                line-height: 50px;
+            }
+            
+            .control-btn {
+                padding: 12px 25px;
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .question {
+                font-size: 2rem;
+            }
+            
+            .number-box, .answer-display {
+                width: 50px;
+                height: 50px;
+                line-height: 50px;
+                font-size: 2rem;
+            }
+            
+            .answer-display {
+                width: 80px;
+            }
+            
+            .level-btn {
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+            
+            .keyboard-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.6rem;
+                margin: 0 3px;
+            }
+            
+            .keyboard-btn.clear {
+                font-size: 1.3rem;
+            }
+            
+            .keyboard-btn.submit {
+                width: 110px;
+                font-size: 1.5rem;
+            }
+            
+            .result-feedback {
+                font-size: 2.2rem;
+                width: 40px;
+                height: 40px;
+                line-height: 40px;
+                margin-left: 10px;
+            }
+            
+            .control-btn {
+                padding: 10px 20px;
+                font-size: 1.1rem;
+            }
+            
+            .game-controls-top {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="celebration" id="celebration">
+            <h2>🎉 新纪录！ 🎉</h2>
+            <p>太棒了！你创造了新的最高分！</p>
+            <button class="control-btn restart-btn" onclick="closeCelebration()">继续游戏</button>
+        </div>
+        
+        <div class="game-header">
+            <h1><i class="fas fa-calculator"></i> 20以内加减法大冒险</h1>
+            <p>让我们一起来挑战数学吧！</p>
+        </div>
+        
+        <div class="game-info">
+            <div class="info-item">
+                <div class="info-label">当前关卡</div>
+                <div class="info-value" id="current-level">1</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">得分</div>
+                <div class="info-value" id="score">0</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">历史最高分</div>
+                <div class="info-value" id="high-score">0</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">生命值</div>
+                <div class="life-container" id="life-container">
+                    <div class="life"><i class="fas fa-heart"></i></div>
+                    <div class="life"><i class="fas fa-heart"></i></div>
+                    <div class="life"><i class="fas fa-heart"></i></div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">挑战时间</div>
+                <div class="info-value" id="challenge-timer">3:00</div>
+            </div>
+        </div>
+        
+        <div class="level-selector">
+            <button class="level-btn" data-level="1">第一关：简单加减法</button>
+            <button class="level-btn" data-level="2">第二关：进位加法</button>
+            <button class="level-btn" data-level="3">第三关：综合练习</button>
+            <button class="level-btn" data-level="4">第四关：退位减法</button>
+            <button class="level-btn" data-level="5">第五关：综合挑战</button>
+        </div>
+        
+        <div class="game-controls-top">
+            <button class="control-btn start-btn" id="start-btn">开始挑战</button>
+            <button class="control-btn restart-btn" id="restart-btn">重新开始</button>
+        </div>
+        
+        <div class="game-area">
+            <div class="question-container">
+                <div class="question" id="question">
+                    <span class="number-box" id="num1">8</span>
+                    <span class="operator" id="operator">+</span>
+                    <span class="number-box" id="num2">3</span>
+                    <span class="equal">=</span>
+                    <div class="answer-display empty" id="answer-display">?</div>
+                    <div class="result-feedback" id="result-feedback"></div>
+                </div>
+            </div>
+            
+            <div class="keyboard-container">
+                <div class="keyboard-row">
+                    <button class="keyboard-btn" data-number="1">1</button>
+                    <button class="keyboard-btn" data-number="2">2</button>
+                    <button class="keyboard-btn" data-number="3">3</button>
+                </div>
+                <div class="keyboard-row">
+                    <button class="keyboard-btn" data-number="4">4</button>
+                    <button class="keyboard-btn" data-number="5">5</button>
+                    <button class="keyboard-btn" data-number="6">6</button>
+                </div>
+                <div class="keyboard-row">
+                    <button class="keyboard-btn" data-number="7">7</button>
+                    <button class="keyboard-btn" data-number="8">8</button>
+                    <button class="keyboard-btn" data-number="9">9</button>
+                </div>
+                <div class="keyboard-row">
+                    <button class="keyboard-btn" data-number="0">0</button>
+                    <button class="keyboard-btn clear">清除</button>
+                    <button class="keyboard-btn submit" id="keyboard-submit">提交</button>
+                </div>
+            </div>
+            
+            <div class="timer-container">
+                <div class="question-timer-container">
+                    <div class="timer-bar">
+                        <div class="timer-progress" id="timer-progress"></div>
+                    </div>
+                    <div class="timer-text" id="timer-text">答题时间: 5秒</div>
+                </div>
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
+        </div>
+        
+        <div class="game-footer">
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> 游戏说明</h3>
+                <p><strong>第一关：20以内的简单加减法</strong> - 计算不进位加法和不退位减法</p>
+                <p><strong>第二关：20以内的进位加法</strong> - 一位数加一位数，且相加会进位的情况</p>
+                <p><strong>第三关：综合练习</strong> - 包含不进位加法、不退位减法和进位加法</p>
+                <p><strong>第四关：20以内的退位减法</strong> - 十几减几，且个位不够减的情况</p>
+                <p><strong>第五关：综合挑战</strong> - 包含所有20以内的加减法（不进位/不退位/进位/退位）</p>
+                <p>每道题有5秒时间回答，回答正确得1分，错误失去一条生命。共3条生命。</p>
+                <p>每次挑战有3分钟时间，时间结束或生命耗尽游戏结束。</p>
+                <p>使用下方数字键盘输入答案，点击"提交"按钮提交答案。</p>
+            </div>
+            
+            <div class="creator-info">
+                <p><strong>游戏设计：乐清市建设路小学黄文静老师</strong></p>
+                <p>如果您在玩游戏过程中有疑问或建议，可通过邮箱 <a href="mailto:875872814@qq.com">875872814@qq.com</a> 与我联系！感谢您的使用！</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 游戏状态变量
+        let currentLevel = 1;
+        let score = 0;
+        let highScore = localStorage.getItem('mathGameHighScore') || 0;
+        let lives = 3;
+        let currentQuestion = {};
+        let gameActive = false;
+        let questionTimer;
+        let challengeTimer;
+        let timeLeft = 5;
+        let challengeTimeLeft = 180; // 3分钟 = 180秒
+        let wrongQuestions = [];
+        let hasShownCelebration = false;
+        let isTimeout = false;
+        let userAnswer = "";
+
+        // DOM元素
+        let levelButtons = document.querySelectorAll('.level-btn');
+        let currentLevelElement = document.getElementById('current-level');
+        let scoreElement = document.getElementById('score');
+        let highScoreElement = document.getElementById('high-score');
+        let lifeContainer = document.getElementById('life-container');
+        let challengeTimerElement = document.getElementById('challenge-timer');
+        let questionElement = document.getElementById('question');
+        let num1Element = document.getElementById('num1');
+        let operatorElement = document.getElementById('operator');
+        let num2Element = document.getElementById('num2');
+        let answerDisplay = document.getElementById('answer-display');
+        let keyboardSubmit = document.getElementById('keyboard-submit');
+        let resultFeedback = document.getElementById('result-feedback');
+        let feedbackElement = document.getElementById('feedback');
+        let startBtn = document.getElementById('start-btn');
+        let restartBtn = document.getElementById('restart-btn');
+        let timerProgress = document.getElementById('timer-progress');
+        let timerText = document.getElementById('timer-text');
+        let celebrationElement = document.getElementById('celebration');
+        let keyboardButtons = document.querySelectorAll('.keyboard-btn');
+
+        // 初始化
+        function init() {
+            scoreElement.textContent = score;
+            highScoreElement.textContent = highScore;
+            updateLives();
+            updateChallengeTimerDisplay();
+            
+            // 初始化关卡1的题目
+            generateQuestion();
+            
+            // 关卡选择事件
+            levelButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (gameActive) return;
+                    currentLevel = parseInt(this.dataset.level);
+                    updateLevelDisplay();
+                    generateQuestion();
+                });
+            });
+            
+            // 开始按钮事件
+            startBtn.addEventListener('click', startGame);
+            
+            // 重新开始按钮事件
+            restartBtn.addEventListener('click', restartGame);
+            
+            // 数字键盘事件
+            keyboardButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!gameActive) return;
+                    
+                    const action = this.textContent;
+                    
+                    if (this.classList.contains('clear')) {
+                        // 清除答案
+                        userAnswer = "";
+                        updateAnswerDisplay();
+                    } else if (this.classList.contains('submit')) {
+                        // 提交答案
+                        if (userAnswer !== "") {
+                            checkAnswer();
+                        }
+                    } else {
+                        // 输入数字
+                        if (userAnswer.length < 2) { // 最多两位数
+                            userAnswer += action;
+                            updateAnswerDisplay();
+                        }
+                    }
+                });
+            });
+            
+            // 更新关卡显示
+            updateLevelDisplay();
+        }
+
+        // 更新关卡显示
+        function updateLevelDisplay() {
+            levelButtons.forEach(btn => {
+                if (parseInt(btn.dataset.level) === currentLevel) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            currentLevelElement.textContent = currentLevel;
+        }
+
+        // 更新生命值显示
+        function updateLives() {
+            const lifeHearts = lifeContainer.querySelectorAll('.life');
+            lifeHearts.forEach((heart, index) => {
+                if (index < lives) {
+                    heart.classList.remove('lost');
+                    heart.innerHTML = '<i class="fas fa-heart"></i>';
+                } else {
+                    heart.classList.add('lost');
+                    heart.innerHTML = '<i class="fas fa-heart-broken"></i>';
+                }
+            });
+        }
+
+        // 更新挑战计时器显示
+        function updateChallengeTimerDisplay() {
+            const minutes = Math.floor(challengeTimeLeft / 60);
+            const seconds = challengeTimeLeft % 60;
+            challengeTimerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        // 更新答案显示
+        function updateAnswerDisplay() {
+            if (userAnswer === "") {
+                answerDisplay.textContent = "?";
+                answerDisplay.className = "answer-display empty";
+            } else {
+                answerDisplay.textContent = userAnswer;
+                answerDisplay.className = "answer-display";
+            }
+        }
+
+        // 生成题目
+        function generateQuestion() {
+            let num1, num2, operator, result;
+            
+            // 根据当前关卡生成题目
+            switch(currentLevel) {
+                case 1: // 简单加减法 - 严格遵循要求
+                    operator = Math.random() > 0.5 ? '+' : '-';
+                    if (operator === '+') {
+                        // 不进位加法：个位加个位不能超过10
+                        do {
+                            num1 = Math.floor(Math.random() * 11); // 0-10
+                            num2 = Math.floor(Math.random() * 11); // 0-10
+                            result = num1 + num2;
+                        } while (result > 20 || (num1 % 10) + (num2 % 10) >= 10);
+                    } else {
+                        // 不退位减法：个位减个位必须够减
+                        do {
+                            num1 = Math.floor(Math.random() * 20) + 1; // 1-20
+                            num2 = Math.floor(Math.random() * (num1 + 1)); // 0-num1
+                            result = num1 - num2;
+                        } while (result < 0 || result > 20 || (num1 % 10) < (num2 % 10));
+                    }
+                    break;
+                    
+                case 2: // 进位加法 - 一位数加一位数，且相加会进位的情况
+                    operator = '+';
+                    do {
+                        // 生成两个一位数（1-9）
+                        num1 = Math.floor(Math.random() * 9) + 1; // 1-9
+                        num2 = Math.floor(Math.random() * 9) + 1; // 1-9
+                        result = num1 + num2;
+                        // 确保相加会进位（个位和大于等于10）且结果在20以内
+                    } while (result < 10 || result > 20);
+                    break;
+                    
+                case 3: // 综合练习 - 包含不进位加法、不退位减法和进位加法
+                    const r = Math.random();
+                    if (r < 0.33) {
+                        // 不进位加法
+                        operator = '+';
+                        do {
+                            num1 = Math.floor(Math.random() * 11); // 0-10
+                            num2 = Math.floor(Math.random() * (11 - num1)); // 确保不进位
+                            result = num1 + num2;
+                        } while (result > 20 || (num1 % 10) + (num2 % 10) >= 10);
+                    } else if (r < 0.66) {
+                        // 不退位减法
+                        operator = '-';
+                        do {
+                            num1 = Math.floor(Math.random() * 20) + 1; // 1-20
+                            num2 = Math.floor(Math.random() * (num1 + 1)); // 0-num1
+                            result = num1 - num2;
+                        } while (result < 0 || result > 20 || (num1 % 10) < (num2 % 10));
+                    } else {
+                        // 进位加法（一位数加一位数）
+                        operator = '+';
+                        do {
+                            num1 = Math.floor(Math.random() * 9) + 1; // 1-9
+                            num2 = Math.floor(Math.random() * 9) + 1; // 1-9
+                            result = num1 + num2;
+                        } while (result < 10 || result > 20);
+                    }
+                    break;
+                    
+                case 4: // 退位减法 - 十几减几，且个位不够减的情况
+                    operator = '-';
+                    do {
+                        // 生成被减数：十几（11-19）
+                        num1 = Math.floor(Math.random() * 9) + 11; // 11-19
+                        // 生成减数：确保个位不够减
+                        // 减数的个位必须大于被减数的个位
+                        const num1Unit = num1 % 10; // 被减数的个位
+                        // 减数可以是1-9，但要确保个位不够减
+                        num2 = Math.floor(Math.random() * 9) + 1; // 1-9
+                        // 确保个位不够减：减数的个位大于被减数的个位
+                    } while (num2 % 10 <= num1 % 10 || num1 - num2 < 0);
+                    result = num1 - num2;
+                    break;
+                    
+                case 5: // 综合挑战 - 包含所有20以内的加减法
+                    const type = Math.floor(Math.random() * 4);
+                    
+                    if (type === 0) {
+                        // 不进位加法
+                        operator = '+';
+                        do {
+                            num1 = Math.floor(Math.random() * 11); // 0-10
+                            num2 = Math.floor(Math.random() * 11); // 0-10
+                            result = num1 + num2;
+                        } while (result > 20 || (num1 % 10) + (num2 % 10) >= 10);
+                    } else if (type === 1) {
+                        // 不退位减法
+                        operator = '-';
+                        do {
+                            num1 = Math.floor(Math.random() * 20) + 1; // 1-20
+                            num2 = Math.floor(Math.random() * (num1 + 1)); // 0-num1
+                            result = num1 - num2;
+                        } while (result < 0 || result > 20 || (num1 % 10) < (num2 % 10));
+                    } else if (type === 2) {
+                        // 进位加法（一位数加一位数）
+                        operator = '+';
+                        do {
+                            num1 = Math.floor(Math.random() * 9) + 1; // 1-9
+                            num2 = Math.floor(Math.random() * 9) + 1; // 1-9
+                            result = num1 + num2;
+                        } while (result < 10 || result > 20);
+                    } else {
+                        // 退位减法（十几减几，个位不够减）
+                        operator = '-';
+                        do {
+                            num1 = Math.floor(Math.random() * 9) + 11; // 11-19
+                            num2 = Math.floor(Math.random() * 9) + 1; // 1-9
+                        } while (num2 % 10 <= num1 % 10 || num1 - num2 < 0);
+                        result = num1 - num2;
+                    }
+                    break;
+            }
+            
+            // 存储当前题目
+            currentQuestion = { num1, num2, operator, result };
+            
+            // 显示题目
+            num1Element.textContent = num1;
+            num1Element.style.backgroundColor = "white";
+            num2Element.textContent = num2;
+            num2Element.style.backgroundColor = "white";
+            operatorElement.textContent = operator;
+            currentQuestion.correctAnswer = result;
+            
+            // 重置答案
+            userAnswer = "";
+            updateAnswerDisplay();
+            resultFeedback.textContent = '';
+            resultFeedback.className = 'result-feedback';
+            answerDisplay.style.backgroundColor = "#fff9c4";
+        }
+
+        // 开始游戏
+        function startGame() {
+            gameActive = true;
+            score = 0;
+            lives = 3;
+            challengeTimeLeft = 180; // 3分钟
+            wrongQuestions = [];
+            hasShownCelebration = false;
+            scoreElement.textContent = score;
+            updateLives();
+            updateChallengeTimerDisplay();
+            startBtn.disabled = true;
+            
+            // 启用数字键盘
+            keyboardButtons.forEach(btn => {
+                btn.disabled = false;
+            });
+            
+            // 开始挑战计时器
+            startChallengeTimer();
+            
+            // 生成第一题
+            generateQuestion();
+            startQuestionTimer();
+        }
+
+        // 开始挑战计时器
+        function startChallengeTimer() {
+            clearInterval(challengeTimer);
+            challengeTimer = setInterval(() => {
+                challengeTimeLeft--;
+                updateChallengeTimerDisplay();
+                
+                if (challengeTimeLeft <= 0) {
+                    clearInterval(challengeTimer);
+                    endGame("时间到！挑战结束！");
+                }
+            }, 1000);
+        }
+
+        // 开始题目计时器
+        function startQuestionTimer() {
+            timeLeft = 5;
+            timerText.textContent = `答题时间: ${timeLeft}秒`;
+            timerProgress.style.width = '100%';
+            timerProgress.style.background = "linear-gradient(to right, #4ecdc4, #ff9e6d)";
+            isTimeout = false;
+            
+            clearInterval(questionTimer);
+            questionTimer = setInterval(() => {
+                timeLeft--;
+                timerText.textContent = `答题时间: ${timeLeft}秒`;
+                timerProgress.style.width = `${(timeLeft / 5) * 100}%`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(questionTimer);
+                    timeOut();
+                } else if (timeLeft <= 2) {
+                    timerProgress.style.background = "linear-gradient(to right, #ff6b6b, #ff9e6d)";
+                }
+            }, 1000);
+        }
+
+        // 超时处理
+        function timeOut() {
+            isTimeout = true;
+            feedbackElement.textContent = "超时啦！要加快口算速度哦！";
+            feedbackElement.className = "feedback timeout";
+            resultFeedback.textContent = "✗";
+            resultFeedback.className = "result-feedback result-incorrect";
+            answerDisplay.style.backgroundColor = "#ffcccc";
+            loseLife();
+            
+            // 禁用数字键盘
+            keyboardButtons.forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // 记录错题
+            let questionStr = `${currentQuestion.num1} ${currentQuestion.operator} ${currentQuestion.num2} = ?`;
+            
+            wrongQuestions.push({
+                question: questionStr,
+                userAnswer: "超时",
+                correctAnswer: currentQuestion.correctAnswer
+            });
+            
+            // 1秒后自动下一题
+            setTimeout(nextQuestion, 1000);
+        }
+
+        // 检查答案
+        function checkAnswer() {
+            if (!gameActive) return;
+            
+            clearInterval(questionTimer);
+            const userAnswerNum = parseInt(userAnswer);
+            
+            if (userAnswer === "") {
+                feedbackElement.textContent = "请输入答案！";
+                feedbackElement.className = "feedback incorrect";
+                return;
+            }
+            
+            if (userAnswerNum === currentQuestion.correctAnswer) {
+                // 回答正确
+                score += 1; // 每答对一题加1分
+                scoreElement.textContent = score;
+                feedbackElement.textContent = "太棒了！回答正确！";
+                feedbackElement.className = "feedback correct";
+                resultFeedback.textContent = "✓";
+                resultFeedback.className = "result-feedback result-correct";
+                answerDisplay.style.backgroundColor = "#ccffcc";
+                
+                // 检查是否打破记录
+                if (score > highScore) {
+                    highScore = score;
+                    highScoreElement.textContent = highScore;
+                    localStorage.setItem('mathGameHighScore', highScore);
+                    
+                    // 第一次破纪录时显示庆祝效果
+                    if (!hasShownCelebration && score > 0) {
+                        showCelebration();
+                        hasShownCelebration = true;
+                    }
+                }
+            } else {
+                // 回答错误
+                feedbackElement.textContent = `答错了，正确答案是：${currentQuestion.correctAnswer}`;
+                feedbackElement.className = "feedback incorrect";
+                resultFeedback.textContent = "✗";
+                resultFeedback.className = "result-feedback result-incorrect";
+                answerDisplay.style.backgroundColor = "#ffcccc";
+                loseLife();
+                
+                // 记录错题
+                let questionStr = `${currentQuestion.num1} ${currentQuestion.operator} ${currentQuestion.num2} = ?`;
+                
+                wrongQuestions.push({
+                    question: questionStr,
+                    userAnswer: userAnswer,
+                    correctAnswer: currentQuestion.correctAnswer
+                });
+            }
+            
+            // 禁用数字键盘
+            keyboardButtons.forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            // 1秒后自动下一题
+            setTimeout(nextQuestion, 1000);
+        }
+
+        // 下一题
+        function nextQuestion() {
+            // 检查游戏是否结束
+            if (lives <= 0) {
+                endGame("生命值耗尽！游戏结束！");
+                return;
+            }
+            
+            // 生成新题目
+            generateQuestion();
+            feedbackElement.textContent = "";
+            
+            // 启用数字键盘
+            keyboardButtons.forEach(btn => {
+                btn.disabled = false;
+            });
+            
+            startQuestionTimer();
+        }
+
+        // 失去生命
+        function loseLife() {
+            lives--;
+            updateLives();
+        }
+
+        // 显示庆祝效果
+        function showCelebration() {
+            celebrationElement.style.display = 'flex';
+            createConfetti();
+        }
+
+        // 关闭庆祝效果
+        function closeCelebration() {
+            celebrationElement.style.display = 'none';
+        }
+
+        // 创建彩色纸屑效果
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffd166', '#ff9e6d', '#a7c5eb'];
+            const container = celebrationElement;
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.top = `${Math.random() * 100}%`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(confetti);
+                
+                // 动画效果
+                setTimeout(() => {
+                    confetti.style.transition = 'all 1s';
+                    confetti.style.opacity = '0';
+                    confetti.style.transform = `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px) rotate(${Math.random() * 360}deg)`;
+                }, 100);
+            }
+        }
+
+        // 结束游戏
+        function endGame(reason) {
+            gameActive = false;
+            clearInterval(questionTimer);
+            clearInterval(challengeTimer);
+            
+            // 禁用数字键盘
+            keyboardButtons.forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            startBtn.disabled = false;
+            
+            // 显示最终得分和错题回顾
+            const gameArea = document.querySelector('.game-area');
+            const gameOverHTML = `
+                <div class="game-over">
+                    <h2>${reason}</h2>
+                    <p>你的最终得分是：</p>
+                    <div class="final-score">${score}</div>
+                    ${wrongQuestions.length > 0 ? `
+                        <div class="wrong-questions">
+                            <h3>错题回顾：</h3>
+                            ${wrongQuestions.map((item, index) => `
+                                <div class="wrong-question-item">
+                                    <span>${item.question}</span>
+                                    <span>你的答案：<span class="wrong-answer">${item.userAnswer}</span></span>
+                                    <span>正确答案：<span class="correct-answer">${item.correctAnswer}</span></span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : '<p>太棒了！没有错题！</p>'}
+                    <div style="margin-top: 20px;">
+                        <button class="control-btn restart-btn" id="game-over-restart">重新开始</button>
+                    </div>
+                </div>
+            `;
+            
+            gameArea.innerHTML = gameOverHTML;
+            
+            // 为游戏结束后的重新开始按钮绑定事件
+            document.getElementById('game-over-restart').addEventListener('click', restartGame);
+        }
+
+        // 重新开始游戏
+        function restartGame() {
+            // 清除所有计时器
+            clearInterval(questionTimer);
+            clearInterval(challengeTimer);
+            
+            // 重置游戏状态
+            gameActive = false;
+            score = 0;
+            lives = 3;
+            challengeTimeLeft = 180;
+            wrongQuestions = [];
+            userAnswer = "";
+            scoreElement.textContent = score;
+            updateLives();
+            updateChallengeTimerDisplay();
+            startBtn.disabled = false;
+            
+            // 恢复游戏区域
+            const gameArea = document.querySelector('.game-area');
+            gameArea.innerHTML = `
+                <div class="question-container">
+                    <div class="question" id="question">
+                        <span class="number-box" id="num1">8</span>
+                        <span class="operator" id="operator">+</span>
+                        <span class="number-box" id="num2">3</span>
+                        <span class="equal">=</span>
+                        <div class="answer-display empty" id="answer-display">?</div>
+                        <div class="result-feedback" id="result-feedback"></div>
+                    </div>
+                </div>
+                
+                <div class="keyboard-container">
+                    <div class="keyboard-row">
+                        <button class="keyboard-btn" data-number="1">1</button>
+                        <button class="keyboard-btn" data-number="2">2</button>
+                        <button class="keyboard-btn" data-number="3">3</button>
+                    </div>
+                    <div class="keyboard-row">
+                        <button class="keyboard-btn" data-number="4">4</button>
+                        <button class="keyboard-btn" data-number="5">5</button>
+                        <button class="keyboard-btn" data-number="6">6</button>
+                    </div>
+                    <div class="keyboard-row">
+                        <button class="keyboard-btn" data-number="7">7</button>
+                        <button class="keyboard-btn" data-number="8">8</button>
+                        <button class="keyboard-btn" data-number="9">9</button>
+                    </div>
+                    <div class="keyboard-row">
+                        <button class="keyboard-btn" data-number="0">0</button>
+                        <button class="keyboard-btn clear">清除</button>
+                        <button class="keyboard-btn submit" id="keyboard-submit">提交</button>
+                    </div>
+                </div>
+                
+                <div class="timer-container">
+                    <div class="question-timer-container">
+                        <div class="timer-bar">
+                            <div class="timer-progress" id="timer-progress"></div>
+                        </div>
+                        <div class="timer-text" id="timer-text">答题时间: 5秒</div>
+                    </div>
+                </div>
+                
+                <div class="feedback" id="feedback"></div>
+            `;
+            
+            // 重新获取DOM元素引用
+            initDOMElements();
+            
+            // 重新绑定事件
+            bindEvents();
+            
+            // 生成新题目
+            generateQuestion();
+        }
+
+        // 重新获取DOM元素引用
+        function initDOMElements() {
+            num1Element = document.getElementById('num1');
+            operatorElement = document.getElementById('operator');
+            num2Element = document.getElementById('num2');
+            answerDisplay = document.getElementById('answer-display');
+            keyboardSubmit = document.getElementById('keyboard-submit');
+            resultFeedback = document.getElementById('result-feedback');
+            feedbackElement = document.getElementById('feedback');
+            startBtn = document.getElementById('start-btn');
+            restartBtn = document.getElementById('restart-btn');
+            timerProgress = document.getElementById('timer-progress');
+            timerText = document.getElementById('timer-text');
+            keyboardButtons = document.querySelectorAll('.keyboard-btn');
+        }
+
+        // 重新绑定事件
+        function bindEvents() {
+            // 开始按钮事件
+            startBtn.addEventListener('click', startGame);
+            
+            // 重新开始按钮事件
+            restartBtn.addEventListener('click', restartGame);
+            
+            // 数字键盘事件
+            keyboardButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!gameActive) return;
+                    
+                    const action = this.textContent;
+                    
+                    if (this.classList.contains('clear')) {
+                        // 清除答案
+                        userAnswer = "";
+                        updateAnswerDisplay();
+                    } else if (this.classList.contains('submit')) {
+                        // 提交答案
+                        if (userAnswer !== "") {
+                            checkAnswer();
+                        }
+                    } else {
+                        // 输入数字
+                        if (userAnswer.length < 2) { // 最多两位数
+                            userAnswer += action;
+                            updateAnswerDisplay();
+                        }
+                    }
+                });
+            });
+        }
+
+        // 初始化游戏
+        window.onload = init;
+    </script>
+</body>
+</html>
